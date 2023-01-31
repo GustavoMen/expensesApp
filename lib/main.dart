@@ -50,24 +50,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Transaction> _transactions = [
-    Transaction(
-      id: "t0",
-      title: "Conta Antiga",
-      value: 400.00,
-      date: DateTime.now().subtract(const Duration(days: 33)),
-    ),
-    Transaction(
-      id: "t1",
-      title: "Novo tenis",
-      value: 310,
-      date: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    Transaction(
-      id: "t2",
-      title: "Novo tenis 2",
-      value: 315,
-      date: DateTime.now().subtract(const Duration(days: 4)),
-    ),
+    // Transaction(
+    //   id: "t0",
+    //   title: "Conta Antiga",
+    //   value: 400.00,
+    //   date: DateTime.now().subtract(const Duration(days: 33)),
+    // ),
+    // Transaction(
+    //   id: "t1",
+    //   title: "Novo tenis",
+    //   value: 310,
+    //   date: DateTime.now().subtract(const Duration(days: 3)),
+    // ),
+    // Transaction(
+    //   id: "t2",
+    //   title: "Novo tenis 2",
+    //   value: 315,
+    //   date: DateTime.now().subtract(const Duration(days: 4)),
+    // ),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -80,12 +80,12 @@ class _HomePageState extends State<HomePage> {
     }).toList();
   }
 
-  _addTransaction(String title, double value) {
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
@@ -93,6 +93,12 @@ class _HomePageState extends State<HomePage> {
     });
 
     Navigator.of(context).pop();
+  }
+
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((e) => e.id == id);
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -120,18 +126,20 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Chart(_recentTransactions),
-              TransactionList(transactions: _transactions),
+              TransactionList(
+                  transactions: _transactions, onRemove: _removeTransaction),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add),
         onPressed: () => _openTransactionFormModal(context),
       ),
